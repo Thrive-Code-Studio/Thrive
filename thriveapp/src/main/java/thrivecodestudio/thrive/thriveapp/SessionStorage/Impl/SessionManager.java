@@ -4,10 +4,10 @@ import thrivecodestudio.thrive.thriveapp.SessionStorage.ISessionManager;
 import java.util.concurrent.BlockingQueue;
 
 public class SessionManager implements ISessionManager {
-    private BlockingQueue<> inMemorySessionChannel;
+    private BlockingQueue<SessionData> inMemorySessionChannel;
 
     public SessionManager() {
-	    this.inMemorySessionChannel = new BlockingQueue<>();
+	    this.inMemorySessionChannel = new BlockingQueue<SessionData>();
     }
 
     @Override
