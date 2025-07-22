@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thrive - CBT App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Login/Signup Page */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(135deg, #4a89dc 0%, #3bafda 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+            z-index: 1;
+        }
+
+        .auth-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .auth-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .auth-title h1 {
+            font-size: 2.5rem;
+            color: #4a89dc;
+            margin-bottom: 10px;
+        }
+
+        .auth-title p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            background: #f5f7fa;
+            border-radius: 30px;
+            padding: 5px;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+            z-index: 1;
+            position: relative;
+            border-radius: 20px;
+        }
+
+        .toggle-btn.active {
+            color: white;
+        }
+
+        .toggle-bg {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 50%;
+            height: calc(100% - 10px);
+            background: linear-gradient(135deg, #4a89dc 0%, #3bafda 100%);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4a89dc 0%, #3bafda 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Dashboard Page */
+        .dashboard {
+            display: none;
+            height: 100vh;
+            position: relative;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        .account-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #4a89dc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .welcome-message h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            color: #666;
+        }
+
+        .accordion {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .accordion-item {
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-header {
+            background: linear-gradient(135deg, #4a89dc 0%, #3bafda 100%);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content {
+            background-color: white;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content.active {
+            max-height: 500px;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .card .abc-section {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 4px solid #4a89dc;
+        }
+
+        .card .abc-section h4 {
+            color: #4a89dc;
+            margin-bottom: 5px;
+        }
+
+        /* Hamburger Menu */
+        .menu-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4a89dc 0%, #3bafda 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-btn span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            position: relative;
+        }
+
+        .menu-btn span::before,
+        .menu-btn span::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn span::before {
+            top: -8px;
+        }
+
+        .menu-btn span::after {
+            top: 8px;
+        }
+
+        .menu-btn.active span {
+            background-color: transparent;
+        }
+
+        .menu-btn.active span::before {
+            transform: rotate(45deg);
+            top: 0;
+        }
+
+        .menu-btn.active span::after {
+            transform: rotate(-45deg);
+            top: 0;
+        }
+
+        .action-menu {
+            position: fixed;
+            bottom: 100px;
+            right: -100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 9;
+            transition: right 0.3s ease;
+        }
+
+        .action-menu.active {
+            right: 40px;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4a89dc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin-bottom: 15px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:nth-child(2) {
+            background-color: #3bafda;
+        }
+
+        .action-btn:nth-child(3) {
+            background-color: #37bc9b;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-title {
+            margin-bottom: 20px;
+            color: #4a89dc;
+        }
+
+        .modal-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #4a89dc 0%, #3bafda 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* ABC Sections in Modal */
+        .abc-columns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .abc-column {
+            flex: 1;
+        }
+
+        .abc-column h4 {
+            color: #4a89dc;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Page -->
+    <div class="auth-container" id="authPage">
+        <div class="auth-box">
+            <div class="auth-title">
+                <h1>Thrive</h1>
+                <p>La tua app personale per la CBT. Monitora i tuoi pensieri, tieni un journal e completa esercizi per migliorare il tuo benessere psicologico.</p>
+            </div>
+
+            <div class="toggle-container">
+                <div class="toggle-bg" id="toggleBg"></div>
+                <button class="toggle-btn active" id="loginBtn">Login</button>
+                <button class="toggle-btn" id="signupBtn">Signup</button>
+            </div>
+
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="La tua email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="La tua password">
+                </div>
+                <button type="button" class="submit-btn" id="loginSubmit">Accedi</button>
+            </form>
+
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Nome</label>
+                    <input type="text" id="signupName" placeholder="Il tuo nome">
+                </div>
+                <div class="form-group">
+                    <label for="signupSurname">Cognome</label>
+                    <input type="text" id="signupSurname" placeholder="Il tuo cognome">
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="La tua email">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Crea una password">
+                </div>
+                <div class="form-group">
+                    <label for="signupCondition">Difficoltà psicologica</label>
+                    <select id="signupCondition">
+                        <option value="">Seleziona...</option>
+                        <option value="ansia" selected>Ansia</option>
+                        <option value="depressione">Depressione</option>
+                        <option value="stress">Stress</option>
+                        <option value="altra">Altra</option>
+                    </select>
+                </div>
+                <button type="button" class="submit-btn" id="signupSubmit">Registrati</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div class="dashboard" id="dashboardPage">
+        <div class="header">
+            <div class="account-icon">👤</div>
+        </div>
+
+        <div class="welcome-message">
+            <h2>Benvenuto, Utente!</h2>
+            <p>Pronto a lavorare sul tuo benessere mentale oggi?</p>
+        </div>
+
+        <div class="accordion" id="accordionContainer">
+            <div class="accordion-item" id="cbtAccordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Esercizi CBT</span>
+                    <span>▼</span>
+                </div>
+                <div class="accordion-content" id="cbtContent">
+                    <!-- Card verranno aggiunte dinamicamente -->
+                </div>
+            </div>
+
+            <div class="accordion-item" id="journalAccordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Journal</span>
+                    <span>▼</span>
+                </div>
+                <div class="accordion-content" id="journalContent">
+                    <!-- Journal verranno aggiunti dinamicamente -->
+                </div>
+            </div>
+
+            <div class="accordion-item" id="taskAccordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Task</span>
+                    <span>▼</span>
+                </div>
+                <div class="accordion-content" id="taskContent">
+                    <!-- Task verranno aggiunti dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Hamburger Menu -->
+        <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+            <span></span>
+        </div>
+
+        <div class="action-menu" id="actionMenu">
+            <div class="action-btn" title="Aggiungi esercizio CBT" onclick="openModal('cbt')">+</div>
+            <div class="action-btn" title="Crea nuovo journal" onclick="openModal('journal')">📔</div>
+            <div class="action-btn" title="Aggiungi task" onclick="openModal('task')">✓</div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="cbtModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title">Nuovo Esercizio CBT (ABC)</h2>
+            <form class="modal-form" id="cbtForm">
+                <div class="form-group">
+                    <label for="cbtTitle">Titolo</label>
+                    <input type="text" id="cbtTitle" placeholder="Es: Pensiero ansioso al lavoro">
+                </div>
+                <div class="form-group">
+                    <label for="cbtDescription">Descrizione</label>
+                    <textarea id="cbtDescription" placeholder="Descrivi brevemente l'esercizio"></textarea>
+                </div>
+                
+                <h3 style="color: #4a89dc; margin: 20px 0 10px;">Modello ABC</h3>
+                <div class="abc-columns">
+                    <div class="abc-column">
+                        <h4>A</h4>
+                        <textarea id="cbtA" placeholder="Antecedente (Situazione scatenante)"></textarea>
+                    </div>
+                    <div class="abc-column">
+                        <h4>B</h4>
+                        <textarea id="cbtB" placeholder="Credenza (Pensiero automatico)"></textarea>
+                    </div>
+                    <div class="abc-column">
+                        <h4>C</h4>
+                        <textarea id="cbtC" placeholder="Conseguenza (Emozione/Comportamento)"></textarea>
+                    </div>
+                </div>
+                
+                <button type="button" class="save-btn" onclick="saveCbt()">Salva Esercizio</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="journalModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title">Nuovo Journal</h2>
+            <form class="modal-form" id="journalForm">
+                <div class="form-group">
+                    <label for="journalTitle">Titolo</label>
+                    <input type="text" id="journalTitle" placeholder="Es: Giornata stressante">
+                </div>
+                <div class="form-group">
+                    <label for="journalDate">Data</label>
+                    <input type="date" id="journalDate">
+                </div>
+                <div class="form-group">
+                    <label for="journalContent">Contenuto</label>
+                    <textarea id="journalContent" placeholder="Scrivi i tuoi pensieri..."></textarea>
+                </div>
+                <button type="button" class="save-btn" onclick="saveJournal()">Salva Journal</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title">Nuovo Task</h2>
+            <form class="modal-form" id="taskForm">
+                <div class="form-group">
+                    <label for="taskTitle">Titolo</label>
+                    <input type="text" id="taskTitle" placeholder="Es: Respirazione profonda">
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Descrizione</label>
+                    <textarea id="taskDescription" placeholder="Descrivi il task"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskDue">Scadenza</label>
+                    <input type="datetime-local" id="taskDue">
+                </div>
+                <button type="button" class="save-btn" onclick="saveTask()">Salva Task</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle between login and signup
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const toggleBg = document.getElementById('toggleBg');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+
+        loginBtn.addEventListener('click', () => {
+            loginBtn.classList.add('active');
+            signupBtn.classList.remove('active');
+            toggleBg.style.transform = 'translateX(0)';
+            loginForm.classList.add('active');
+            signupForm.classList.remove('active');
+        });
+
+        signupBtn.addEventListener('click', () => {
+            signupBtn.classList.add('active');
+            loginBtn.classList.remove('active');
+            toggleBg.style.transform = 'translateX(100%)';
+            signupForm.classList.add('active');
+            loginForm.classList.remove('active');
+        });
+
+        // Simple auth simulation
+        const loginSubmit = document.getElementById('loginSubmit');
+        const signupSubmit = document.getElementById('signupSubmit');
+        const authPage = document.getElementById('authPage');
+        const dashboardPage = document.getElementById('dashboardPage');
+
+        loginSubmit.addEventListener('click', () => {
+            authPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            // Aggiungi qualche esempio predefinito
+            addExampleData();
+        });
+
+        signupSubmit.addEventListener('click', () => {
+            authPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            // Aggiungi qualche esempio predefinito
+            addExampleData();
+        });
+
+        // Accordion functionality
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            content.classList.toggle('active');
+            const arrow = header.querySelector('span:last-child');
+            arrow.textContent = content.classList.contains('active') ? '▲' : '▼';
+        }
+
+        // Hamburger menu functionality
+        function toggleMenu() {
+            const menuBtn = document.getElementById('menuBtn');
+            const actionMenu = document.getElementById('actionMenu');
+            
+            menuBtn.classList.toggle('active');
+            actionMenu.classList.toggle('active');
+        }
+
+        // Modal functionality
+        function openModal(type) {
+            document.getElementById(`${type}Modal`).style.display = 'flex';
+            toggleMenu(); // Chiudi il menu delle azioni
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // Save functions
+        function saveCbt() {
+            const title = document.getElementById('cbtTitle').value;
+            const description = document.getElementById('cbtDescription').value;
+            const a = document.getElementById('cbtA').value;
+            const b = document.getElementById('cbtB').value;
+            const c = document.getElementById('cbtC').value;
+            
+            if (!title || !a || !b || !c) {
+                alert('Compila tutti i campi dell\'esercizio ABC!');
+                return;
+            }
+            
+            const cbtContent = document.getElementById('cbtContent');
+            const cardId = Date.now(); // ID unico
+            
+            const cardHTML = `
+                <div class="card" id="cbt-${cardId}">
+                    <h3>${title}</h3>
+                    <p>${description}</p>
+                    <div class="abc-section">
+                        <h4>A - Antecedente</h4>
+                        <p>${a}</p>
+                    </div>
+                    <div class="abc-section">
+                        <h4>B - Credenza</h4>
+                        <p>${b}</p>
+                    </div>
+                    <div class="abc-section">
+                        <h4>C - Conseguenza</h4>
+                        <p>${c}</p>
+                    </div>
+                </div>
+            `;
+            
+            cbtContent.insertAdjacentHTML('afterbegin', cardHTML);
+            closeModal();
+            resetForm('cbtForm');
+            
+            // Assicurati che l'accordion sia aperto
+            document.getElementById('cbtAccordion').querySelector('.accordion-header').click();
+        }
+
+        function saveJournal() {
+            const title = document.getElementById('journalTitle').value;
+            const date = document.getElementById('journalDate').value;
+            const content = document.getElementById('journalContent').value;
+            
+            if (!title || !content) {
+                alert('Compila almeno titolo e contenuto!');
+                return;
+            }
+            
+            const formattedDate = date ? new Date(date).toLocaleDateString() : new Date().toLocaleDateString();
+            const journalContent = document.getElementById('journalContent');
+            const journalId = Date.now();
+            
+            const journalHTML = `
+                <div class="card" id="journal-${journalId}">
+                    <h3>${title} - ${formattedDate}</h3>
+                    <p>${content}</p>
+                </div>
+            `;
+            
+            journalContent.insertAdjacentHTML('afterbegin', journalHTML);
+            closeModal();
+            resetForm('journalForm');
+            
+            // Assicurati che l'accordion sia aperto
+            document.getElementById('journalAccordion').querySelector('.accordion-header').click();
+        }
+
+        function saveTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const due = document.getElementById('taskDue').value;
+            
+            if (!title) {
+                alert('Inserisci almeno un titolo per il task!');
+                return;
+            }
+            
+            const formattedDue = due ? new Date(due).toLocaleString() : 'Nessuna scadenza';
+            const taskContent = document.getElementById('taskContent');
+            const taskId = Date.now();
+            
+            const taskHTML = `
+                <div class="card" id="task-${taskId}">
+                    <h3>${title}</h3>
+                    <p>${description || 'Nessuna descrizione'}</p>
+                    <p><small>Scadenza: ${formattedDue}</small></p>
+                </div>
+            `;
+            
+            taskContent.insertAdjacentHTML('afterbegin', taskHTML);
+            closeModal();
+            resetForm('taskForm');
+            
+            // Assicurati che l'accordion sia aperto
+            document.getElementById('taskAccordion').querySelector('.accordion-header').click();
+        }
+
+        function resetForm(formId) {
+            document.getElementById(formId).reset();
+        }
+
+        // Aggiungi dati di esempio al primo accesso
+        function addExampleData() {
+            // Esempio CBT ABC
+            const exampleCbt = {
+                title: "Ansia prima di una presentazione",
+                description: "Esempio di ristrutturazione cognitiva per ansia da performance",
+                a: "Domani ho una presentazione importante al lavoro",
+                b: "Farò sicuramente una figuraccia e tutti penseranno che sono incompetente",
+                c: "Ansia, difficoltà a dormire, evitamento della preparazione"
+            };
+            
+            // Esempio Journal
+            const exampleJournal = {
+                title: "Primo giorno con Thrive",
+                date: new Date().toISOString().split('T')[0],
+                content: "Oggi ho provato Thrive per la prima volta. Mi sento ottimista sul poter lavorare sulla mia ansia con questi strumenti."
+            };
+            
+            // Esempio Task
+            const exampleTask = {
+                title: "Respirazione diaframmatica",
+                description: "Fai 5 minuti di respirazione profonda",
+                due: new Date(Date.now() + 86400000).toISOString().slice(0, 16) // Domani
+            };
+            
+            // Inserisci gli esempi
+            document.getElementById('cbtTitle').value = exampleCbt.title;
+            document.getElementById('cbtDescription').value = exampleCbt.description;
+            document.getElementById('cbtA').value = exampleCbt.a;
+            document.getElementById('cbtB').value = exampleCbt.b;
+            document.getElementById('cbtC').value = exampleCbt.c;
+            saveCbt();
+            
+            document.getElementById('journalTitle').value = exampleJournal.title;
+            document.getElementById('journalDate').value = exampleJournal.date;
+            document.getElementById('journalContent').value = exampleJournal.content;
+            saveJournal();
+            
+            document.getElementById('taskTitle').value = exampleTask.title;
+            document.getElementById('taskDescription').value = exampleTask.description;
+            document.getElementById('taskDue').value = exampleTask.due;
+            saveTask();
+        }
+
+        // Close accordion when clicking another one
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const currentlyActive = document.querySelector('.accordion-content.active');
+                if (currentlyActive && currentlyActive !== this.nextElementSibling) {
+                    currentlyActive.classList.remove('active');
+                    const currentArrow = currentlyActive.previousElementSibling.querySelector('span:last-child');
+                    currentArrow.textContent = '▼';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
