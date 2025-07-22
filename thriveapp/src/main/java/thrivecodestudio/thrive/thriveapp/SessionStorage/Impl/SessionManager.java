@@ -3,9 +3,9 @@ package thrivecodestudio.thrive.thriveapp.SessionStorage.Impl;
 import thrivecodestudio.thrive.thriveapp.SessionStorage.ISessionManager;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Iterator;
 
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 @Scope("singleton")
 public class SessionManager implements ISessionManager {
@@ -25,18 +25,16 @@ public class SessionManager implements ISessionManager {
     }
 
     @Override
-    public void removeFromChannel(final SessionData data) {
-    
-    }
+    public boolean isSessionAlreadyPerformed(final byte[] key) {
+	   Iterator<SessionData> d =  this.inMemorySessionChannel.iterator();
+	   while (d.hasNext()) {
+	   	final SessionData session = d.next();
+		final byte[] sessionId = session.getSessionId();
 
-    @Override
-    public boolean isSessionPresentInChannel(final int key) {
-        return false;
-    }
-
-    @Override
-    public boolean isSessionAlreadyPerformed(final int key) {
-        return false;
+		if (sessionId.equals(key))
+			return true;
+	   }
+	   return false;
     }
 
     /**

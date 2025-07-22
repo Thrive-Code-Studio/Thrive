@@ -8,12 +8,18 @@ package thrivecodestudio.thrive.thriveapp.SessionStorage.Impl;
  * like Redis, or Riak.
  * */	
 public class SessionData {
-	private long sessionId;
+	// the session id is represented by
+	// the username added to an incremental
+	// integer that acts as a logical clock
+	private byte[] sessionId;
 	private String actionUser;
 	private ThriveOperations opCode;
+
+	// this field contains the ID data of each 
+	// cards in the app. 
 	private byte[] rawData;
 
-	public SessionData(final long sessionId, final String userResponsible, final ThriveOperations operationCode, byte[] raw) {
+	public SessionData(final byte[] sessionId, final String userResponsible, final ThriveOperations operationCode, byte[] raw) {
 		this.sessionId = sessionId;
 		this.actionUser = userResponsible;
 		this.opCode = operationCode;
@@ -21,7 +27,7 @@ public class SessionData {
 	}
 
 	// getters
-	public long getSessionId() {
+	public byte[] getSessionId() {
 		return this.sessionId;
 	}
 
@@ -31,14 +37,6 @@ public class SessionData {
 
 	public byte[] getRawData() {
 		return this.rawData;
-	}
-
-	public void parseRawData() {
-		// TODO
-	}
-
-	private void setRawData() {
-		// TODO
 	}
 }
 
