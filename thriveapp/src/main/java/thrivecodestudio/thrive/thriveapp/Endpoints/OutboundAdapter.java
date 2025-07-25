@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import thrivecodestudio.thrive.thriveapp.SessionStorage.ISessionManager;
 import thrivecodestudio.thrive.thriveapp.SessionStorage.Impl.SessionData;
+import thrivecodestudio.thrive.thriveapp.Messages.ThrivePostMessages;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -23,9 +24,11 @@ public class OutboundAdapter {
      * */ 
     @Autowired
     private ISessionManager sessionM;
+    @Autowired
+    private ThrivePostMessages postMessages;
 
     @PostMapping(path = "/cbt-new-card")
-    public void handleCBTCardCreation(HttpServletResponse res) {
+    public void handleCBTCardCreation(@RequestBody postMessages, HttpServletResponse res) {
 	  final SessionData data = new SessionData();
 	  this.sessionM.forwardToChannel(data); 
 
