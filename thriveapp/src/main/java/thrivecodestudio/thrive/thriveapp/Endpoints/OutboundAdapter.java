@@ -23,12 +23,12 @@ public class OutboundAdapter {
      * in case of network failures
      * */ 
     @Autowired
-    private ISessionManager sessionM;
+    private ISessionManager sessionM
     @Autowired
     private ThrivePostMessages postMessages;
 
     @PostMapping(path = "/cbt-new-card")
-    public void handleCBTCardCreation(@RequestBody postMessages, HttpServletResponse res) {
+    public void handleCBTCardCreation(@RequestBody CardCBTCreationMessage postMessages, HttpServletResponse res) {
 	  final SessionData data = new SessionData();
 	  this.sessionM.forwardToChannel(data); 
 

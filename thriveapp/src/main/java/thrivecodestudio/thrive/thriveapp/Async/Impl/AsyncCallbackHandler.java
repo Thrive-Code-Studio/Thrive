@@ -2,11 +2,15 @@ package thrivecodestudio.thrive.thriveapp.Async.Impl;
 
 
 import thrivecodestudio.thrive.thriveapp.Async.IAsyncCallbackHandler;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 public class AsyncCallbackHandler implements IAsyncCallbackHandler {
+    private ConcurrentLinkedQueue<HttpServletResponse> callbackHandler;
 
     public AsyncCallbackHandler() {
-
+	    this.callbackHandler = new ConcurrentLinkedQueue<>();
     }
 
     @Override
